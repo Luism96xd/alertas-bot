@@ -32,7 +32,7 @@ async def summary(context: ContextTypes.DEFAULT_TYPE) -> None:
 
     job = context.job
     new_count = get_error_count().get('count') 
-    if new_count != count and new_count > 15:
+    if new_count != count:
         e1 = get_errors(1)
         e2 = get_errors(2)
         e3 = get_errors(3)
@@ -50,7 +50,7 @@ async def errors(context: ContextTypes.DEFAULT_TYPE) -> None:
 
     job = context.job
     count = len(get_errors(2))
-    if (count > 1) and (count != e2_count):
+    if (count > 0) and (count != e2_count):
         e2_count = count
         template = "¡Se han detectado {count} errores de envío! Por favor revise\n\n"
         for row in get_errors(2):
