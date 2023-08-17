@@ -11,7 +11,7 @@ e2_count = 0
 CHANNEL_ID =  os.environ.get('CHANNEL_ID')
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 WEBHOOK_URL= os.environ.get('WEBHOOK_URL')
-PORT = os.environ.get('PORT')
+PORT = int(os.environ.get('PORT', '8443'))
 print(PORT)
 
 # Enable logging
@@ -26,7 +26,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     template+= "Escribe el comando: /set <minutos> para crear el recordatorio"
     await update.message.reply_text(template)
 
-async def resumen(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def summary(context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send the summary message."""
     global count
 
@@ -44,7 +44,7 @@ async def resumen(context: ContextTypes.DEFAULT_TYPE) -> None:
         await context.bot.send_message(job.chat_id, text=template)
         count = new_count
 
-async def errores(context: ContextTypes.DEFAULT_TYPE) -> None:
+async def errors(context: ContextTypes.DEFAULT_TYPE) -> None:
     """Nunca se envió (Error de la aplicación)"""
     global e2_count
 
@@ -83,8 +83,8 @@ async def set_timer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             return
 
         job_removed = remove_job_if_exists(str(chat_id), context)
-        context.job_queue.run_repeating(resumen, interval=due, chat_id=chat_id, name=str(chat_id), data=due)
-        context.job_queue.run_repeating(errores, interval=due, chat_id=chat_id, name=str(chat_id), data=due)
+        context.job_queue.run_repeating(summary, interval=due, chat_id=chat_id, name=str(chat_id), data=due)
+        context.job_queue.run_repeating(errors, interval=due, chat_id=chat_id, name=str(chat_id), data=due)
         context.job_queue.run_repeating(reporte_negativos, interval=600, chat_id=chat_id, name=str(chat_id))
 
         text = "Timer successfully set!"
@@ -113,21 +113,18 @@ def remove_job_if_exists(name: str, context: ContextTypes.DEFAULT_TYPE) -> bool:
     return True
 
 def main():
-    app = Application.builder().token(TOKEN).build()
+    app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler(["start", "help"], start))
     app.add_handler(CommandHandler("set", set_timer))
     app.add_handler(CommandHandler("stop", unset))
-
-    #app.run_polling(allowed_updates=Update.ALL_TYPES)
     
     app.run_webhook(
-    listen='127.0.0.1',
-    port=PORT,
-    url_path=BOT_TOKEN,
-    webhook_url=WEBHOOK_URL,
-)
-
+        listen='127.0.0.1',
+        port=PORT,
+        url_path=BOT_TOKEN,
+        webhook_url=WEBHOOK_URL,
+    )
 
 if __name__ == '__main__':
     main()
