@@ -118,13 +118,9 @@ def main():
     app.add_handler(CommandHandler(["start", "help"], start))
     app.add_handler(CommandHandler("set", set_timer))
     app.add_handler(CommandHandler("stop", unset))
-    
-    app.run_webhook(
-        listen='127.0.0.1',
-        port=PORT,
-        url_path=BOT_TOKEN,
-        webhook_url=WEBHOOK_URL,
-    )
+
+    # Run the bot until the user presses Ctrl-C
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == '__main__':
     main()
