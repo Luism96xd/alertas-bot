@@ -36,7 +36,10 @@ async def summary(context: ContextTypes.DEFAULT_TYPE) -> None:
         e1 = get_errors(1)
         e2 = get_errors(2)
         e3 = get_errors(3)
-        template = f"⚠️ ¡Se han detectado {new_count} errores! ⚠️ Por favor revise \n\n"
+        if(int(new_count) > 0):
+            template = f"⚠️ ¡Se han detectado {new_count} errores! ⚠️ Por favor revise \n\n"
+        else:
+            template = f"Se han detectado {new_count} errores.\n\n"
         template+= f"{len(e1)} errores de conexión.\n\n"
         template+= f"{len(e2)} errores de envío.\n\n"
         template+= f"{len(e3)} super bancas con números negativos.\n\n"
