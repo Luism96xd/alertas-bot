@@ -32,11 +32,11 @@ async def resumen(context: ContextTypes.DEFAULT_TYPE) -> None:
 
     job = context.job
     new_count = get_error_count().get('count') 
-    if new_count != count:
+    if new_count != count and new_count > 15:
         e1 = get_errors(1)
         e2 = get_errors(2)
         e3 = get_errors(3)
-        template = f"¡Se han detectado {new_count} errores! Por favor revise\n\n"
+        template = f"⚠️ ¡Se han detectado {new_count} errores! ⚠️ Por favor revise \n\n"
         template+= f"{len(e1)} errores de conexión.\n\n"
         template+= f"{len(e2)} errores de envío.\n\n"
         template+= f"{len(e3)} super bancas con números negativos.\n\n"
