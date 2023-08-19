@@ -23,7 +23,7 @@ To use the JobQueue, you must install PTB via
 """
 
 import logging
-
+import os
 from telegram import __version__ as TG_VER
 
 try:
@@ -44,6 +44,10 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
+
+WEBHOOK_URL = os.environ.get('WEBHOOK_URL')
+
+TOKEN = os.environ.get('TOKEN')
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -106,7 +110,7 @@ async def unset(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 def main() -> None:
     """Run bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token("TOKEN").build()
+    application = Application.builder().token(TOKEN).build()
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler(["start", "help"], start))
